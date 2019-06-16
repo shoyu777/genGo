@@ -30,10 +30,7 @@ fmt.Println(g.Romaji)
 ```
 
 ```go
-g, err := genGo.New(760)
-if err != nil {
-  fmt.Println(err)
-}
+g, _ := genGo.New(760)
 fmt.Println(g.Kanji)
 //output -> 天平宝字 4年
 ```
