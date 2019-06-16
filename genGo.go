@@ -4,22 +4,40 @@ import (
 	"encoding/csv"
 	"log"
 	"os"
+	"path"
+	"runtime"
 	"strconv"
 )
 
-type Gengo struct {
+type gengo struct {
 	StartYear int
 	Kanji     string
 	Romaji    string
 	Hiragana  string
 }
 
-var gengoList []Gengo
+//GengoResult has the result of search with Kanji, Romaji, Hiragana characters.
+type GengoResult struct {
+	Kanji    string
+	Romaji   string
+	Hiragana string
+}
+
+var gengoList []gengo
+
+//New search Gengo and return GengoResult
+func New(year int) GengoResult {
+	var sr gengo
+	sr = search(year)
+	return setResult(year, sr)
+}
 
 func init() {
-	gengoList = []Gengo{}
+	gengoList = []gengo{}
 
-	fr, err := os.Open("./src/mypkg/genGo/era_names.csv")
+	//get file path of 'genGo.go' and create a path of data source, and open.
+	_, filename, _, _ := runtime.Caller(0)
+	fr, err := os.Open(path.Join(path.Dir(filename), "era_names.csv"))
 	failOnError(err)
 
 	defer fr.Close()
@@ -33,14 +51,14 @@ func init() {
 	//set Gengo struct to a list from csv file
 	for _, v := range rows {
 		i, _ := strconv.Atoi(v[0])
-		g := Gengo{i, v[1], v[2], v[3]}
+		g := gengo{i, v[1], v[2], v[3]}
 		gengoList = append(gengoList, g)
 	}
 
 }
 
-//Search to seach gengo from YYYY
-func Search(target int) Gengo {
+//search to seach gengo from YYYY
+func search(target int) gengo {
 	head := 0
 	tail := len(gengoList) - 1
 	center := 0
@@ -62,6 +80,22 @@ func Search(target int) Gengo {
 	}
 
 	return gengoList[1]
+}
+
+func setResult(year int, gg gengo) GengoResult {
+	var gr GengoResult
+
+	eraYear := year - gg.StartYear + 1
+	if eraYear == 1 {
+		gr.Hiragana = gg.Hiragana + " がんねん"
+		gr.Kanji = gg.Kanji + " 元年"
+		gr.Romaji = gg.Romaji + " GAN NEN"
+	} else {
+		gr.Hiragana = gg.Hiragana + " " + strconv.Itoa(eraYear) + "ねん"
+		gr.Kanji = gg.Kanji + " " + strconv.Itoa(eraYear) + "年"
+		gr.Romaji = gg.Romaji + " " + strconv.Itoa(eraYear) + "NEN"
+	}
+	return gr
 }
 
 func failOnError(err error) {
