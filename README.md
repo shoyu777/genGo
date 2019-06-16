@@ -7,7 +7,11 @@ $ go get github.com/shoyu777/genGo
 ```
 Please call New function with any years with as int YYYY. It returns new struct with result.
 
-The input year has to be 645 or above.
+The input year has to be 645 or above. Otherwise error returned.
+
+```go
+import "genGo"
+```
 
 ```go
 g, err := genGo.New(2019)
