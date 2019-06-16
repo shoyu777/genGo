@@ -87,7 +87,7 @@ func search(target int) gengo {
 			}
 		}
 	}
-	return gengoList[0]
+	return gengoList[head]
 }
 
 func setResult(year int, gg gengo) GengoResult {
