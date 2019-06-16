@@ -1,8 +1,18 @@
 package genGo
 
 import (
+	"fmt"
 	"testing"
 )
+
+func ExampleNew() {
+	g, err := New(2019)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(g.Romaji)
+	//output -> REIWA GAN NEN
+}
 
 func TestGengoSearch(t *testing.T) {
 	gg, _ := New(2019)

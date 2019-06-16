@@ -1,3 +1,9 @@
+/*
+Package genGo provide a result of conversion
+from Anno Domini(YYYY) to Japanese Era called Gengo.
+
+The result contains the strings of Kanji, Hiragana and Romaji of Gengo.
+*/
 package genGo
 
 import (
