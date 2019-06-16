@@ -2,6 +2,7 @@ package genGo
 
 import (
 	"encoding/csv"
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -26,10 +27,18 @@ type GengoResult struct {
 var gengoList []gengo
 
 //New search Gengo and return GengoResult
-func New(year int) GengoResult {
+func New(year int) (GengoResult, error) {
+	//year range checking
+	err := yearRangeCheck(year)
+	if err != nil {
+		fmt.Println(err)
+		g := GengoResult{"", "", ""}
+		return g, err
+	}
+
 	var sr gengo
 	sr = search(year)
-	return setResult(year, sr)
+	return setResult(year, sr), nil
 }
 
 func init() {
@@ -57,7 +66,7 @@ func init() {
 
 }
 
-//search to seach gengo from YYYY
+//search to seach gengo from YYYY using binary search.
 func search(target int) gengo {
 	head := 0
 	tail := len(gengoList) - 1
@@ -78,8 +87,7 @@ func search(target int) gengo {
 			}
 		}
 	}
-
-	return gengoList[1]
+	return gengoList[0]
 }
 
 func setResult(year int, gg gengo) GengoResult {
@@ -93,7 +101,7 @@ func setResult(year int, gg gengo) GengoResult {
 	} else {
 		gr.Hiragana = gg.Hiragana + " " + strconv.Itoa(eraYear) + "ねん"
 		gr.Kanji = gg.Kanji + " " + strconv.Itoa(eraYear) + "年"
-		gr.Romaji = gg.Romaji + " " + strconv.Itoa(eraYear) + "NEN"
+		gr.Romaji = gg.Romaji + " " + strconv.Itoa(eraYear) + " NEN"
 	}
 	return gr
 }
